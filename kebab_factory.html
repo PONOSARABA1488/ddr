@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌯 Kebab Factory</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+        
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            transition: background 0.4s
+        }
+        
+        body.halal {
+            background: #1a2e1a
+        }
+        /* TOP BAR */
+        
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 52px;
+            background: #fafafa;
+            color: #222;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+            transition: background 0.4s
+        }
+        
+        body.halal .topbar {
+            background: #8aae8a
+        }
+        
+        .topbar-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            letter-spacing: 2px
+        }
+        
+        .topbar-center {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+        
+        .stat-badge {
+            background: #f0f0f0;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.82rem;
+            white-space: nowrap
+        }
+        
+        .stat-badge b {
+            color: #c8860a
+        }
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+        
+        .topbar-right a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.82rem
+        }
+        
+        .topbar-right a:hover {
+            color: #222
+        }
+        
+        #halalBtn {
+            height: 32px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: transform .15s
+        }
+        
+        #halalBtn:hover {
+            transform: scale(1.1)
+        }
+        /* LAYOUT */
+        
+        .wrap {
+            display: flex;
+            height: 100vh;
+            padding-top: 52px
+        }
+        
+        #c {
+            flex: 1;
+            display: block;
+            cursor: default;
+            min-width: 0
+        }
+        /* SIDE PANEL */
+        
+        .side {
+            width: 300px;
+            background: #12121f;
+            border-left: 1px solid #252538;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+        
+        body.halal .side {
+            background: #0e1e0e;
+            border-color: #1a3a1a
+        }
+        
+        .tabs {
+            display: flex;
+            flex-shrink: 0;
+            border-bottom: 1px solid #252538
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 10px 4px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.78rem;
+            color: #666;
+            transition: color .2s;
+            user-select: none
+        }
+        
+        .tab.active {
+            color: #e6a817;
+            border-bottom: 2px solid #e6a817
+        }
+        
+        .panels {
+            flex: 1;
+            overflow-y: auto
+        }
+        
+        .panels::-webkit-scrollbar {
+            width: 3px
+        }
+        
+        .panels::-webkit-scrollbar-track {
+            background: #12121f
+        }
+        
+        .panels::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px
+        }
+        
+        .sec {
+            padding: 14px;
+            border-bottom: 1px solid #252538
+        }
+        
+        body.halal .sec {
+            border-color: #1a3a1a
+        }
+        
+        .sec h3 {
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 10px
+        }
+        /* BUTTONS */
+        
+        .btn {
+            width: 100%;
+            padding: 11px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all .2s;
+            margin-top: 6px;
+            display: block
+        }
+        
+        .btn:disabled {
+            background: #333!important;
+            color: #666!important;
+            cursor: not-allowed
+        }
+        
+        .btn-make {
+            background: #e6a817;
+            color: #111
+        }
+        
+        .btn-make:hover:not(:disabled) {
+            background: #f5bc2a;
+            transform: translateY(-1px)
+        }
+        
+        .btn-go {
+            background: #3a7bd5;
+            color: #fff
+        }
+        
+        .btn-go:hover:not(:disabled) {
+            background: #5090e8;
+            transform: translateY(-1px)
+        }
+        
+        .btn-sell {
+            background: #27ae60;
+            color: #fff
+        }
+        
+        .btn-sell:hover:not(:disabled) {
+            background: #2ecc71;
+            transform: translateY(-1px)
+        }
+        
+        .cd-bar {
+            height: 4px;
+            background: #252538;
+            border-radius: 2px;
+            margin-top: 7px;
+            overflow: hidden
+        }
+        
+        .cd-fill {
+            height: 100%;
+            background: #e6a817;
+            transition: width .1s linear;
+            width: 0
+        }
+        
+        .cd-fill.blue {
+            background: #3a7bd5
+        }
+        
+        .cd-fill.green {
+            background: #27ae60
+        }
+        
+        .cd-info {
+            font-size: 0.75rem;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+            min-height: 16px
+        }
+        /* KEBAB VISUAL */
+        
+        .kv {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            margin: 8px 0;
+            min-height: 76px;
+            justify-content: flex-end
+        }
+        
+        .kl {
+            border-radius: 3px;
+            height: 10px;
+            animation: slide .25s ease
+        }
+        
+        @keyframes slide {
+            from {
+                transform: translateX(-12px);
+                opacity: 0
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1
+            }
+        }
+        /* UPGRADE BUTTONS */
+        
+        .upg {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #252538;
+            border-radius: 7px;
+            background: #1a1a2e;
+            color: #ddd;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-align: left;
+            margin-top: 5px;
+            transition: all .2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+        
+        body.halal .upg {
+            background: #0e1e0e
+        }
+        
+        .upg:hover:not(:disabled) {
+            border-color: #e6a817;
+            background: #22223a
+        }
+        
+        .upg:disabled {
+            opacity: .38;
+            cursor: not-allowed
+        }
+        
+        .upg .cost {
+            color: #e6a817;
+            font-weight: bold;
+            font-size: 0.78rem;
+            white-space: nowrap;
+            margin-left: 6px
+        }
+        
+        .upg .owned {
+            color: #27ae60;
+            font-size: 0.78rem
+        }
+        /* LEADERBOARD */
+        
+        .lb-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #252538;
+            font-size: 0.82rem
+        }
+        
+        .lb-row:first-child .lb-name {
+            color: #e6a817
+        }
+        /* COUNTER */
+        
+        .big-num {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #e6a817;
+            text-align: center;
+            margin: 6px 0
+        }
+        
+        .sub-label {
+            font-size: 0.78rem;
+            color: #666;
+            text-align: center;
+            margin-bottom: 4px
+        }
+        /* MODAL */
+        
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999
+        }
+        
+        .modal {
+            background: #12121f;
+            border: 1px solid #252538;
+            border-radius: 14px;
+            padding: 30px;
+            text-align: center;
+            width: 280px
+        }
+        
+        .modal h2 {
+            font-size: 1.4rem;
+            margin-bottom: 6px
+        }
+        
+        .modal p {
+            color: #888;
+            margin-bottom: 18px;
+            font-size: 0.87rem
+        }
+        
+        .modal input {
+            width: 100%;
+            padding: 11px;
+            border-radius: 7px;
+            border: 1px solid #333;
+            background: #1e1e35;
+            color: #eee;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-align: center
+        }
+        
+        .modal button {
+            width: 100%;
+            padding: 11px;
+            border-radius: 7px;
+            border: none;
+            background: #e6a817;
+            color: #111;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer
+        }
+        
+        .modal button:hover {
+            background: #f5bc2a
+        }
+        /* TOAST */
+        
+        .toast {
+            position: fixed;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e6a817;
+            color: #111;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.88rem;
+            z-index: 500;
+            animation: toast 2s ease forwards;
+            pointer-events: none
+        }
+        
+        @keyframes toast {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(8px)
+            }
+            15% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0)
+            }
+            80% {
+                opacity: 1
+            }
+            100% {
+                opacity: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAME MODAL -->
+    <div id="nameModal" class="overlay">
+        <div class="modal">
+            <h2>🌯 Kebab Factory</h2>
+            <p>Введи имя, чтобы начать</p>
+            <input id="nameInput" type="text" placeholder="Твоё имя..." maxlength="20" onkeydown="if(event.key==='Enter')startGame()" />
+            <button onclick="startGame()">Начать!</button>
+        </div>
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <span class="topbar-title">🌯 KEBAB FACTORY</span>
+        <div class="topbar-center">
+            <div class="stat-badge">🪙 <b id="dCoins">0</b> K-Coin</div>
+            <div class="stat-badge">🏭 <b id="dFac">0</b></div>
+            <div class="stat-badge">🏪 <b id="dShop">0</b></div>
+        </div>
+        <div class="topbar-right">
+            <span id="dName" style="color:#666;font-size:0.82rem"></span>
+            <img id="halalBtn" src="halal.png" onclick="toggleHalal()" title="Халяль мод" />
+            <a href="index.html">← Главная</a>
+        </div>
+    </div>
+
+    <!-- GAME WRAP -->
+    <div class="wrap">
+        <canvas id="c"></canvas>
+        <div class="side">
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active" id="t-fac" onclick="setTab('fac')">🏭</div>
+                <div class="tab" id="t-shop" onclick="setTab('shop')">🏪</div>
+                <div class="tab" id="t-upg" onclick="setTab('upg')">⬆️</div>
+                <div class="tab" id="t-lb" onclick="setTab('lb')">🏆</div>
+            </div>
+            <div class="panels">
+
+                <!-- FACTORY PANEL -->
+                <div id="p-fac">
+                    <div class="sec">
+                        <h3>Производство</h3>
+                        <div class="kv" id="kv"></div>
+                        <button class="btn btn-make" id="btnMake" onclick="makeKebab()">🌯 Приготовить</button>
+                        <div class="cd-bar">
+                            <div class="cd-fill" id="cdMake"></div>
+                        </div>
+                        <div class="cd-info" id="infoMake">Готов!</div>
+                    </div>
+                    <div class="sec">
+                        <h3>Доставка → магазин</h3>
+                        <div class="big-num" id="dFac2">0</div>
+                        <div class="sub-label">кебабов на фабрике</div>
+                        <button class="btn btn-go" id="btnTrans" onclick="doTransport()">🚚 Отвезти в магазин</button>
+                        <div class="cd-bar">
+                            <div class="cd-fill blue" id="cdTrans"></div>
+                        </div>
+                        <div class="cd-info" id="infoTrans"></div>
+                    </div>
+                    <div class="sec" id="s-fwrk" style="display:none">
+                        <h3>👨‍🍳 Работник фабрики</h3>
+                        <div class="cd-info" id="infoFW">Работает...</div>
+                        <div class="cd-bar">
+                            <div class="cd-fill" id="cdFW"></div>
+                        </div>
+                    </div>
+                    <div class="sec" id="s-twrk" style="display:none">
+                        <h3>🚚 Работник доставки</h3>
+                        <div class="cd-info" id="infoTW">Работает...</div>
+                        <div class="cd-bar">
+                            <div class="cd-fill blue" id="cdTW"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SHOP PANEL -->
+                <div id="p-shop" style="display:none">
+                    <div class="sec">
+                        <h3>Продажа (+5 🪙 за шт)</h3>
+                        <div class="big-num" id="dShop2">0</div>
+                        <div class="sub-label">кебабов в магазине</div>
+                        <button class="btn btn-sell" id="btnSell" onclick="doSell()">💰 Продать всё</button>
+                        <div class="cd-bar">
+                            <div class="cd-fill green" id="cdSell"></div>
+                        </div>
+                        <div class="cd-info" id="infoSell"></div>
+                    </div>
+                    <div class="sec" id="s-swrk" style="display:none">
+                        <h3>🧑‍💼 Продавец</h3>
+                        <div class="cd-info" id="infoSW">Работает...</div>
+                        <div class="cd-bar">
+                            <div class="cd-fill green" id="cdSW"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UPGRADES PANEL -->
+                <div id="p-upg" style="display:none">
+                    <div class="sec">
+                        <h3>Партия кебабов</h3>
+                        <button class="upg" id="u-b2" onclick="buy('b2')"><span>🌯×2 Двойная партия</span><span class="cost" id="c-b2">50🪙</span></button>
+                        <button class="upg" id="u-b3" onclick="buy('b3')"><span>🌯×3 Тройная партия</span><span class="cost" id="c-b3">150🪙</span></button>
+                        <button class="upg" id="u-b4" onclick="buy('b4')"><span>🌯×4 Максимум</span><span class="cost" id="c-b4">300🪙</span></button>
+                    </div>
+                    <div class="sec">
+                        <h3>Работники</h3>
+                        <button class="upg" id="u-fw1" onclick="buy('fw1')"><span>👨‍🍳 Работник фабрики (25с)</span><span class="cost" id="c-fw1">100🪙</span></button>
+                        <button class="upg" id="u-fw2" onclick="buy('fw2')"><span>👨‍🍳↑ Прокачка (15с)</span><span class="cost" id="c-fw2">200🪙</span></button>
+                        <button class="upg" id="u-fw3" onclick="buy('fw3')"><span>👨‍🍳↑↑ Прокачка (10с)</span><span class="cost" id="c-fw3">400🪙</span></button>
+                        <button class="upg" id="u-tw1" onclick="buy('tw1')"><span>🚚 Работник доставки (60с)</span><span class="cost" id="c-tw1">150🪙</span></button>
+                        <button class="upg" id="u-tw2" onclick="buy('tw2')"><span>🚚↑ Прокачка (45с)</span><span class="cost" id="c-tw2">300🪙</span></button>
+                        <button class="upg" id="u-tw3" onclick="buy('tw3')"><span>🚚↑↑ Прокачка (30с)</span><span class="cost" id="c-tw3">600🪙</span></button>
+                        <button class="upg" id="u-sw1" onclick="buy('sw1')"><span>🧑‍💼 Продавец в магазин (20с)</span><span class="cost" id="c-sw1">200🪙</span></button>
+                        <button class="upg" id="u-sw2" onclick="buy('sw2')"><span>🧑‍💼↑ Прокачка (12с)</span><span class="cost" id="c-sw2">450🪙</span></button>
+                    </div>
+                </div>
+
+                <!-- LEADERBOARD -->
+                <div id="p-lb" style="display:none">
+                    <div class="sec">
+                        <h3>🏆 Таблица лидеров</h3>
+                        <div id="lbList"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // ═══════════════════════════════
+        //  STATE
+        // ═══════════════════════════════
+        const SK = 'kf_save';
+        let G = {
+            name: '',
+            coins: 0,
+            fKeb: 0,
+            sKeb: 0,
+            batch: 1,
+            hasFW: false,
+            fwCD: 25000,
+            hasTW: false,
+            twCD: 60000,
+            hasSW: false,
+            swCD: 20000,
+            owned: [],
+            // live timers (not saved)
+            mkOn: false,
+            mkT: 0,
+            trOn: false,
+            trT: 0,
+            slOn: false,
+            slT: 0,
+            fwT: 0,
+            twT: 0,
+            swT: 0,
+        };
+        const MK_CD = 3000,
+            TR_CD = 1500,
+            SL_CD = 1500;
+
+        // ═══════════════════════════════
+        //  HALAL
+        // ═══════════════════════════════
+        let halal = localStorage.getItem('halalMode') === '1';
+
+        function toggleHalal() {
+            halal = !halal;
+            document.body.classList.toggle('halal', halal);
+            localStorage.setItem('halalMode', halal ? '1' : '0');
+            if (scene) scene.background = new THREE.Color(halal ? 0x4a8a4a : 0x87ceeb);
+        }
+        if (halal) document.body.classList.add('halal');
+
+        // ═══════════════════════════════
+        //  SAVE / LOAD
+        // ═══════════════════════════════
+        function save() {
+            const d = {
+                name: G.name,
+                coins: G.coins,
+                fKeb: G.fKeb,
+                sKeb: G.sKeb,
+                batch: G.batch,
+                hasFW: G.hasFW,
+                fwCD: G.fwCD,
+                hasTW: G.hasTW,
+                twCD: G.twCD,
+                hasSW: G.hasSW,
+                swCD: G.swCD,
+                owned: G.owned
+            };
+            localStorage.setItem(SK, JSON.stringify(d));
+            // leaderboard
+            let lb = JSON.parse(localStorage.getItem('kf_lb') || '[]');
+            const i = lb.findIndex(e => e.n === G.name);
+            if (i >= 0) {
+                if (G.coins > lb[i].c) lb[i].c = G.coins;
+            } else lb.push({
+                n: G.name,
+                c: G.coins
+            });
+            lb.sort((a, b) => b.c - a.c);
+            localStorage.setItem('kf_lb', JSON.stringify(lb.slice(0, 10)));
+        }
+
+        function load() {
+            try {
+                const r = localStorage.getItem(SK);
+                if (!r) return false;
+                const d = JSON.parse(r);
+                Object.assign(G, d);
+                G.mkOn = G.trOn = G.slOn = false;
+                G.mkT = G.trT = G.slT = 0;
+                G.fwT = G.hasFW ? G.fwCD : 0;
+                G.twT = G.hasTW ? G.twCD : 0;
+                G.swT = G.hasSW ? G.swCD : 0;
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // ═══════════════════════════════
+        //  NAME MODAL
+        // ═══════════════════════════════
+        function startGame() {
+            const n = document.getElementById('nameInput').value.trim();
+            if (!n) return;
+            G.name = n;
+            document.getElementById('nameModal').style.display = 'none';
+            document.getElementById('dName').textContent = '👤 ' + n;
+            save();
+        }
+
+        // ═══════════════════════════════
+        //  ACTIONS
+        // ═══════════════════════════════
+        function makeKebab() {
+            if (G.mkOn) return;
+            G.fKeb += G.batch;
+            save();
+            toast('+' + G.batch + ' 🌯');
+            trigCD('mk', MK_CD);
+            buildKV();
+        }
+
+        function doTransport() {
+            if (G.trOn || G.fKeb === 0) return;
+            const n = G.fKeb;
+            G.sKeb += n;
+            G.fKeb = 0;
+            save();
+            toast('🚚 ' + n + ' кебабов → магазин');
+            trigCD('tr', TR_CD);
+        }
+
+        function doSell() {
+            if (G.slOn || G.sKeb === 0) return;
+            const e = G.sKeb * 5;
+            G.coins += e;
+            G.sKeb = 0;
+            save();
+            toast('+' + e + ' 🪙');
+            trigCD('sl', SL_CD);
+        }
+
+        // ═══════════════════════════════
+        //  COOLDOWN HELPERS
+        // ═══════════════════════════════
+        function trigCD(t, dur) {
+            if (t === 'mk') {
+                G.mkOn = true;
+                G.mkT = dur;
+                document.getElementById('btnMake').disabled = true;
+            }
+            if (t === 'tr') {
+                G.trOn = true;
+                G.trT = dur;
+                document.getElementById('btnTrans').disabled = true;
+            }
+            if (t === 'sl') {
+                G.slOn = true;
+                G.slT = dur;
+                document.getElementById('btnSell').disabled = true;
+            }
+        }
+
+        // ═══════════════════════════════
+        //  UPGRADES
+        // ═══════════════════════════════
+        const UPGS = {
+            b2: {
+                cost: 50,
+                req: null,
+                apply: () => G.batch = Math.max(G.batch, 2)
+            },
+            b3: {
+                cost: 150,
+                req: 'b2',
+                apply: () => G.batch = Math.max(G.batch, 3)
+            },
+            b4: {
+                cost: 300,
+                req: 'b3',
+                apply: () => G.batch = Math.max(G.batch, 4)
+            },
+            fw1: {
+                cost: 100,
+                req: null,
+                apply: () => {
+                    G.hasFW = true;
+                    G.fwT = G.fwCD;
+                    document.getElementById('s-fwrk').style.display = 'block'
+                }
+            },
+            fw2: {
+                cost: 200,
+                req: 'fw1',
+                apply: () => {
+                    G.fwCD = 15000
+                }
+            },
+            fw3: {
+                cost: 400,
+                req: 'fw2',
+                apply: () => {
+                    G.fwCD = 10000
+                }
+            },
+            tw1: {
+                cost: 150,
+                req: null,
+                apply: () => {
+                    G.hasTW = true;
+                    G.twT = G.twCD;
+                    document.getElementById('s-twrk').style.display = 'block'
+                }
+            },
+            tw2: {
+                cost: 300,
+                req: 'tw1',
+                apply: () => {
+                    G.twCD = 45000
+                }
+            },
+            tw3: {
+                cost: 600,
+                req: 'tw2',
+                apply: () => {
+                    G.twCD = 30000
+                }
+            },
+            sw1: {
+                cost: 200,
+                req: null,
+                apply: () => {
+                    G.hasSW = true;
+                    G.swT = G.swCD;
+                    document.getElementById('s-swrk').style.display = 'block'
+                }
+            },
+            sw2: {
+                cost: 450,
+                req: 'sw1',
+                apply: () => {
+                    G.swCD = 12000
+                }
+            },
+        };
+
+        function buy(k) {
+            const u = UPGS[k];
+            if (!u || G.owned.includes(k)) return;
+            if (u.req && !G.owned.includes(u.req)) {
+                toast('🔒 Сначала предыдущий!');
+                return;
+            }
+            if (G.coins < u.cost) {
+                toast('❌ Мало K-Coin!');
+                return;
+            }
+            G.coins -= u.cost;
+            G.owned.push(k);
+            u.apply();
+            refreshUpgBtns();
+            save();
+            toast('✅ Куплено!');
+        }
+
+        function applyAll() {
+            G.owned.forEach(k => UPGS[k] && UPGS[k].apply());
+        }
+
+        function refreshUpgBtns() {
+            Object.keys(UPGS).forEach(k => {
+                const u = UPGS[k];
+                const btn = document.getElementById('u-' + k);
+                const cel = document.getElementById('c-' + k);
+                if (!btn) return;
+                const own = G.owned.includes(k);
+                const rMet = !u.req || G.owned.includes(u.req);
+                if (own) {
+                    cel.textContent = '✅';
+                    cel.className = 'owned';
+                    btn.disabled = true;
+                } else if (!rMet) {
+                    cel.textContent = '🔒';
+                    cel.className = 'cost';
+                    btn.disabled = true;
+                } else {
+                    cel.textContent = u.cost + '🪙';
+                    cel.className = 'cost';
+                    btn.disabled = G.coins < u.cost;
+                }
+            });
+        }
+
+        // ═══════════════════════════════
+        //  TABS
+        // ═══════════════════════════════
+        let curTab = 'fac';
+
+        function setTab(t) {
+            ['fac', 'shop', 'upg', 'lb'].forEach(x => {
+                document.getElementById('p-' + x).style.display = x === t ? 'block' : 'none';
+                document.getElementById('t-' + x).classList.toggle('active', x === t);
+            });
+            curTab = t;
+            if (t === 'upg') refreshUpgBtns();
+            if (t === 'lb') renderLB();
+        }
+
+        function renderLB() {
+            const lb = JSON.parse(localStorage.getItem('kf_lb') || '[]');
+            const el = document.getElementById('lbList');
+            if (!lb.length) {
+                el.innerHTML = '<div style="color:#666;font-size:0.82rem;padding:8px 0">Пока пусто</div>';
+                return;
+            }
+            el.innerHTML = lb.map((e, i) => `<div class="lb-row"><span class="lb-name">${i+1}. ${e.n}</span><span>${e.c} 🪙</span></div>`).join('');
+        }
+
+        // ═══════════════════════════════
+        //  KEBAB VISUAL
+        // ═══════════════════════════════
+        const KLayers = [{
+            c: '#c8a96e',
+            w: 82
+        }, {
+            c: '#8B1a1a',
+            w: 70
+        }, {
+            c: '#1e7a1e',
+            w: 68
+        }, {
+            c: '#e8503a',
+            w: 70
+        }, {
+            c: '#f5f0c8',
+            w: 64
+        }, {
+            c: '#f0c830',
+            w: 74
+        }, {
+            c: '#c8a96e',
+            w: 82
+        }];
+
+        function buildKV() {
+            document.getElementById('kv').innerHTML = KLayers.map(l =>
+                `<div class="kl" style="width:${l.w}px;background:${l.c}"></div>`).join('');
+        }
+
+        // ═══════════════════════════════
+        //  TOAST
+        // ═══════════════════════════════
+        function toast(msg) {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2100);
+        }
+
+        // ═══════════════════════════════
+        //  UI UPDATE
+        // ═══════════════════════════════
+        function updateUI() {
+            document.getElementById('dCoins').textContent = G.coins;
+            document.getElementById('dFac').textContent = G.fKeb;
+            document.getElementById('dShop').textContent = G.sKeb;
+            document.getElementById('dFac2').textContent = G.fKeb;
+            document.getElementById('dShop2').textContent = G.sKeb;
+            if (!G.mkOn) {
+                document.getElementById('btnMake').disabled = false;
+                document.getElementById('infoMake').textContent = 'Готов!';
+            }
+            if (!G.trOn) {
+                document.getElementById('btnTrans').disabled = G.fKeb === 0;
+                document.getElementById('infoTrans').textContent = G.fKeb ? '' : 'Нет кебабов';
+            }
+            if (!G.slOn) {
+                document.getElementById('btnSell').disabled = G.sKeb === 0;
+                document.getElementById('infoSell').textContent = G.sKeb ? '' : 'Нет кебабов';
+            }
+        }
+
+        // ═══════════════════════════════
+        //  TICK
+        // ═══════════════════════════════
+        let lastT = 0;
+
+        function tick(ts) {
+            const dt = lastT ? (ts - lastT) : 0;
+            lastT = ts;
+
+            function cdTick(on, timer, total, fillId, infoId, label, doneCb) {
+                if (!on) return {
+                    on,
+                    timer
+                };
+                timer -= dt;
+                const pct = Math.max(0, (1 - timer / total) * 100);
+                document.getElementById(fillId).style.width = pct + '%';
+                document.getElementById(infoId).textContent = timer > 0 ? label + ' ' + Math.max(0, timer / 1000).toFixed(1) + 'с' : '';
+                if (timer <= 0) {
+                    document.getElementById(fillId).style.width = '0%';
+                    doneCb();
+                }
+                return {
+                    on: timer > 0,
+                    timer
+                };
+            }
+
+            // Make CD
+            let r = cdTick(G.mkOn, G.mkT, MK_CD, 'cdMake', 'infoMake', 'Готовится...', () => {
+                G.mkOn = false
+            });
+            G.mkOn = r.on;
+            G.mkT = r.timer;
+
+            // Transport CD
+            r = cdTick(G.trOn, G.trT, TR_CD, 'cdTrans', 'infoTrans', 'Везёт...', () => {
+                G.trOn = false
+            });
+            G.trOn = r.on;
+            G.trT = r.timer;
+
+            // Sell CD
+            r = cdTick(G.slOn, G.slT, SL_CD, 'cdSell', 'infoSell', 'Продаёт...', () => {
+                G.slOn = false
+            });
+            G.slOn = r.on;
+            G.slT = r.timer;
+
+            // Factory worker
+            if (G.hasFW) {
+                G.fwT -= dt;
+                const p = Math.max(0, (1 - G.fwT / G.fwCD) * 100);
+                document.getElementById('cdFW').style.width = p + '%';
+                document.getElementById('infoFW').textContent = G.fwT > 0 ? 'Готовит... ' + (G.fwT / 1000).toFixed(1) + 'с' : '';
+                if (G.fwT <= 0) {
+                    G.fwT = G.fwCD;
+                    G.fKeb += G.batch;
+                    toast('👨‍🍳 +' + G.batch + ' 🌯');
+                    save();
+                }
+            }
+            // Transport worker
+            if (G.hasTW) {
+                G.twT -= dt;
+                const p = Math.max(0, (1 - G.twT / G.twCD) * 100);
+                document.getElementById('cdTW').style.width = p + '%';
+                document.getElementById('infoTW').textContent = G.twT > 0 ? 'Везёт... ' + (G.twT / 1000).toFixed(1) + 'с' : '';
+                if (G.twT <= 0) {
+                    G.twT = G.twCD;
+                    if (G.fKeb > 0) {
+                        const n = G.fKeb;
+                        G.sKeb += n;
+                        G.fKeb = 0;
+                        toast('🚚 ' + n + ' → магазин');
+                        save();
+                    }
+                }
+            }
+            // Shop worker
+            if (G.hasSW) {
+                G.swT -= dt;
+                const p = Math.max(0, (1 - G.swT / G.swCD) * 100);
+                document.getElementById('cdSW').style.width = p + '%';
+                document.getElementById('infoSW').textContent = G.swT > 0 ? 'Продаёт... ' + (G.swT / 1000).toFixed(1) + 'с' : '';
+                if (G.swT <= 0) {
+                    G.swT = G.swCD;
+                    if (G.sKeb > 0) {
+                        const e = G.sKeb * 5;
+                        G.coins += e;
+                        G.sKeb = 0;
+                        toast('🧑‍💼 +' + e + ' 🪙');
+                        save();
+                    }
+                }
+            }
+
+            updateUI();
+            threeAnimate();
+            requestAnimationFrame(tick);
+        }
+
+        // ═══════════════════════════════
+        //  THREE.JS
+        // ═══════════════════════════════
+        let renderer, scene, camera, facGrp, shopGrp, clock3;
+        let hoverFac = false,
+            hoverShop = false;
+
+        function initThree() {
+            const cv = document.getElementById('c');
+            renderer = new THREE.WebGLRenderer({
+                canvas: cv,
+                antialias: true
+            });
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(halal ? 0x4a8a4a : 0x87ceeb);
+            scene.fog = new THREE.Fog(halal ? 0x4a8a4a : 0x87ceeb, 28, 55);
+
+            camera = new THREE.PerspectiveCamera(58, 1, 0.1, 100);
+            camera.position.set(0, 9, 15);
+            camera.lookAt(0, 0, 0);
+
+            function resize() {
+                const w = cv.clientWidth,
+                    h = cv.clientHeight;
+                renderer.setSize(w, h, false);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            // Lights
+            scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+            const sun = new THREE.DirectionalLight(0xfff5e0, 1.1);
+            sun.position.set(8, 18, 10);
+            sun.castShadow = true;
+            sun.shadow.mapSize.set(1024, 1024);
+            scene.add(sun);
+
+            // Ground
+            const gnd = new THREE.Mesh(
+                new THREE.PlaneGeometry(60, 60),
+                new THREE.MeshLambertMaterial({
+                    color: halal ? 0x3a6b3a : 0x4a7c4e
+                })
+            );
+            gnd.rotation.x = -Math.PI / 2;
+            gnd.receiveShadow = true;
+            scene.add(gnd);
+
+            // Road
+            const road = new THREE.Mesh(new THREE.PlaneGeometry(3.5, 22), new THREE.MeshLambertMaterial({
+                color: 0x4a4a4a
+            }));
+            road.rotation.x = -Math.PI / 2;
+            road.position.y = 0.01;
+            scene.add(road);
+            for (let i = -4; i <= 4; i++) {
+                const m = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 1.2), new THREE.MeshLambertMaterial({
+                    color: 0xdddddd
+                }));
+                m.rotation.x = -Math.PI / 2;
+                m.position.set(0, 0.02, i * 2.4);
+                scene.add(m);
+            }
+
+            // ── FACTORY ──
+            facGrp = new THREE.Group();
+            facGrp.userData.type = 'factory';
+
+            const fb = mesh(new THREE.BoxGeometry(5.5, 4.5, 4.5), 0x7a7a8a);
+            fb.position.y = 2.25;
+            fb.castShadow = true;
+            fb.receiveShadow = true;
+            facGrp.add(fb);
+
+            const roof = mesh(new THREE.BoxGeometry(6, 0.4, 5), 0x555566);
+            roof.position.y = 4.7;
+            roof.castShadow = true;
+            facGrp.add(roof);
+
+            const ch1 = mesh(new THREE.CylinderGeometry(0.28, 0.36, 3.5, 8), 0x666677);
+            ch1.position.set(1.4, 6.2, 0);
+            ch1.castShadow = true;
+            facGrp.add(ch1);
+            const ch2 = mesh(new THREE.CylinderGeometry(0.2, 0.28, 2.8, 8), 0x666677);
+            ch2.position.set(-0.8, 5.65, 0);
+            ch2.castShadow = true;
+            facGrp.add(ch2);
+
+            // Smoke puffs
+            for (let ci = 0; ci < 2; ci++) {
+                for (let si = 0; si < 4; si++) {
+                    const sp = mesh(new THREE.SphereGeometry(0.25 + si * 0.06, 7, 7), 0xbbbbbb);
+                    sp.material.transparent = true;
+                    sp.material.opacity = 0.55;
+                    sp.position.set(ci === 0 ? 1.4 : -0.8, 7.5 + ci * -0.5 + si * 0.65, 0);
+                    sp.userData = {
+                        smoke: true,
+                        ox: ci === 0 ? 1.4 : -0.8,
+                        oy: 7.5 + ci * -0.5 + si * 0.65,
+                        phase: si * 0.5 + ci * 1.2
+                    };
+                    facGrp.add(sp);
+                }
+            }
+
+            // Door
+            facGrp.add(posset(mesh(new THREE.BoxGeometry(1, 1.8, 0.08), 0x7B4F2E), 0, 0.9, 2.29));
+            // Windows
+            facGrp.add(posset(mesh(new THREE.BoxGeometry(1.1, 0.9, 0.08), 0x9ecfdf), -1.8, 2.6, 2.29));
+            facGrp.add(posset(mesh(new THREE.BoxGeometry(1.1, 0.9, 0.08), 0x9ecfdf), 1.8, 2.6, 2.29));
+            // Sign
+            const fsign = mesh(new THREE.BoxGeometry(3.5, 0.8, 0.1), 0xff7a00);
+            fsign.position.set(0, 3.9, 2.31);
+            facGrp.add(fsign);
+
+            facGrp.position.set(-6.5, 0, 0);
+            scene.add(facGrp);
+
+            // ── SHOP ──
+            shopGrp = new THREE.Group();
+            shopGrp.userData.type = 'shop';
+
+            const sb = mesh(new THREE.BoxGeometry(4.5, 3.5, 4), 0xe8c87c);
+            sb.position.y = 1.75;
+            sb.castShadow = true;
+            sb.receiveShadow = true;
+            shopGrp.add(sb);
+
+            // Pyramid roof
+            const rGeo = new THREE.ConeGeometry(3.4, 2, 4);
+            const rMesh = new THREE.Mesh(rGeo, new THREE.MeshLambertMaterial({
+                color: 0xc0392b
+            }));
+            rMesh.position.y = 4.5;
+            rMesh.rotation.y = Math.PI / 4;
+            rMesh.castShadow = true;
+            shopGrp.add(rMesh);
+
+            shopGrp.add(posset(mesh(new THREE.BoxGeometry(0.9, 1.6, 0.08), 0x5D4037), 0, 0.8, 2.05));
+            shopGrp.add(posset(mesh(new THREE.BoxGeometry(1, 0.85, 0.08), 0xadd8e6), -1.4, 2.0, 2.05));
+            shopGrp.add(posset(mesh(new THREE.BoxGeometry(1, 0.85, 0.08), 0xadd8e6), 1.4, 2.0, 2.05));
+            // Awning
+            const aw = mesh(new THREE.BoxGeometry(5, 0.15, 1.2), 0xe74c3c);
+            aw.position.set(0, 2.8, 2.6);
+            aw.rotation.x = 0.2;
+            shopGrp.add(aw);
+            // Sign
+            shopGrp.add(posset(mesh(new THREE.BoxGeometry(3, 0.7, 0.1), 0x27ae60), 0, 2.8, 2.11));
+
+            // Kebab boxes outside shop (visual indicator)
+            for (let bi = 0; bi < 3; bi++) {
+                const box = mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), 0xc8a020);
+                box.position.set(-1 + bi * 0.55, 0.25, 2.4);
+                box.castShadow = true;
+                box.userData = {
+                    box: true,
+                    idx: bi
+                };
+                shopGrp.add(box);
+            }
+
+            shopGrp.position.set(6.5, 0, 0);
+            scene.add(shopGrp);
+
+            // Trees
+            function tree(x, z) {
+                const t = new THREE.Group();
+                t.add(posset(mesh(new THREE.CylinderGeometry(0.15, 0.2, 1.6, 6), 0x8B4513), 0, 0.8, 0));
+                const top = mesh(new THREE.SphereGeometry(0.85, 8, 6), 0x228B22);
+                top.position.y = 2.2;
+                t.add(top);
+                t.position.set(x, 0, z);
+                scene.add(t);
+            }
+            tree(-3, -5);
+            tree(3, -5);
+            tree(-11, 2);
+            tree(11, 2);
+            tree(-11, -4);
+            tree(11, -4);
+
+            // Click + hover
+            cv.addEventListener('click', e => raycast(e, true));
+            cv.addEventListener('mousemove', e => raycast(e, false));
+            clock3 = new THREE.Clock();
+        }
+
+        function mesh(geo, color) {
+            return new THREE.Mesh(geo, new THREE.MeshLambertMaterial({
+                color
+            }))
+        }
+
+        function posset(m, x, y, z) {
+            m.position.set(x, y, z);
+            return m
+        }
+
+        function raycast(e, click) {
+            const cv = document.getElementById('c');
+            const r = cv.getBoundingClientRect();
+            const mouse = new THREE.Vector2(
+                ((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1
+            );
+            const rc = new THREE.Raycaster();
+            rc.setFromCamera(mouse, camera);
+            const objs = [];
+            facGrp.traverse(c => {
+                if (c.isMesh) objs.push(c)
+            });
+            shopGrp.traverse(c => {
+                if (c.isMesh) objs.push(c)
+            });
+            const hits = rc.intersectObjects(objs);
+            hoverFac = false;
+            hoverShop = false;
+            if (hits.length) {
+                let p = hits[0].object;
+                while (p.parent && !p.userData.type) p = p.parent;
+                if (p.userData.type === 'factory') {
+                    hoverFac = true;
+                    if (click) setTab('fac');
+                }
+                if (p.userData.type === 'shop') {
+                    hoverShop = true;
+                    if (click) setTab('shop');
+                }
+                cv.style.cursor = 'pointer';
+            } else cv.style.cursor = 'default';
+        }
+
+        function threeAnimate() {
+            if (!renderer) return;
+            const t = clock3 ? clock3.getElapsedTime() : 0;
+            // Smoke
+            facGrp.children.forEach(c => {
+                if (c.userData.smoke) {
+                    c.position.y = c.userData.oy + Math.sin(t * 1.8 + c.userData.phase) * 0.12;
+                    const s = 1 + Math.sin(t + c.userData.phase) * 0.06;
+                    c.scale.set(s, s, s);
+                }
+            });
+            // Kebab boxes bob
+            shopGrp.children.forEach(c => {
+                if (c.userData.box) c.position.y = 0.25 + Math.sin(t * 1.5 + c.userData.idx * 1.1) * 0.04;
+            });
+            // Hover highlight
+            const hl = c => new THREE.Color(c);
+            facGrp.traverse(c => {
+                if (c.isMesh && !c.userData.smoke) c.material.emissive = hl(hoverFac ? 0x221800 : 0x000000)
+            });
+            shopGrp.traverse(c => {
+                if (c.isMesh) c.material.emissive = hl(hoverShop ? 0x002200 : 0x000000)
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // ═══════════════════════════════
+        //  INIT
+        // ═══════════════════════════════
+        window.addEventListener('load', () => {
+            const loaded = load();
+            if (loaded && G.name) {
+                document.getElementById('nameModal').style.display = 'none';
+                document.getElementById('dName').textContent = '👤 ' + G.name;
+                applyAll();
+            }
+            buildKV();
+            initThree();
+            requestAnimationFrame(tick);
+        });
+    </script>
+</body>
+
+</html>

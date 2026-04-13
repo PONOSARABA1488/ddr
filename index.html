@@ -9,13 +9,32 @@
 </head>
 
 <body>
+    <div class="sidebar">
+        <span class="sidebar-title">DEALDEALRUN</span>
+        <a href="kebab_factory.html" class="btn-kebab">🌯 KEBAB FACTORY</a>
+        <img id="halalBtn" src="halal.png" alt="Халяль" onclick="toggleHalal()" />
+    </div>
+
     <h1>Дилдилран!</h1>
     <p>Дилдилран - лучшее произведение искуства, творение алаха!</p>
-
     <audio id="snd" src="ddrondb.wav"></audio>
-    <img src="ddr1.jpg" alt="Случайное фото" onclick="document.getElementById('snd').play()" style="cursor:pointer;" />
-
+    <img id="mainImg" src="ddr1.jpg" alt="Случайное фото." onclick="document.getElementById('snd').play()" style="cursor:pointer;" />
     <p>Фото дилдилрана #1.</p>
+
+    <script>
+        let halal = localStorage.getItem('halalMode') === '1';
+        if (halal) {
+            document.body.classList.add('halal');
+            document.getElementById('mainImg').src = 'ddr2.png';
+        }
+
+        function toggleHalal() {
+            halal = !halal;
+            document.body.classList.toggle('halal', halal);
+            document.getElementById('mainImg').src = halal ? 'ddr2.png' : 'ddr1.jpg';
+            localStorage.setItem('halalMode', halal ? '1' : '0');
+        }
+    </script>
 </body>
 
 </html>

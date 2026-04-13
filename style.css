@@ -1,10 +1,15 @@
 body {
-    background-color: #f0f0f0;
+    background-color: #ededed;
     font-family: Arial, sans-serif;
     max-width: 700px;
-    margin: 40px auto;
-    padding: 0 20px;
+    margin: 0 auto;
+    padding: 70px 20px 20px;
     color: #222;
+    transition: background-color 0.4s;
+}
+
+body.halal {
+    background-color: #8aae8a;
 }
 
 h1 {
@@ -17,8 +22,66 @@ p {
     margin-bottom: 16px;
 }
 
-img {
+#mainImg {
     width: 100%;
-    border-radius: 8px;
+    border-radius: 67px;
     margin-bottom: 16px;
+}
+
+
+/* ── TOP SIDEBAR ── */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    background-color: #fafafa;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+}
+
+body.halal .sidebar {
+    background-color: #8aae8a;
+}
+
+.sidebar-title {
+    font-weight: bold;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    color: #222;
+}
+
+.btn-kebab {
+    margin-left: 20px;
+    padding: 6px 14px;
+    background: #e6a817;
+    color: #111;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: background 0.2s;
+}
+
+.btn-kebab:hover {
+    background: #f0bb30;
+}
+
+#halalBtn {
+    position: absolute;
+    right: 18px;
+    height: 34px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.15s;
+}
+
+#halalBtn:hover {
+    transform: scale(1.1);
 }
