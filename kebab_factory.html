@@ -569,9 +569,9 @@
                     </div>
                     <div class="sec">
                         <h3>Работники</h3>
-                        <button class="upg" id="u-fw1" onclick="buy('fw1')"><span>👨‍🍳 Работник фабрики (25с)</span><span class="cost" id="c-fw1">100🪙</span></button>
-                        <button class="upg" id="u-fw2" onclick="buy('fw2')"><span>👨‍🍳↑ Прокачка (15с)</span><span class="cost" id="c-fw2">200🪙</span></button>
-                        <button class="upg" id="u-fw3" onclick="buy('fw3')"><span>👨‍🍳↑↑ Прокачка (10с)</span><span class="cost" id="c-fw3">400🪙</span></button>
+                        <button class="upg" id="u-fw1" onclick="buy('fw1')"><span>👨‍🍳 Работник фабрики (5с)</span><span class="cost" id="c-fw1">100🪙</span></button>
+                        <button class="upg" id="u-fw2" onclick="buy('fw2')"><span>👨‍🍳↑ Прокачка (3.15с)</span><span class="cost" id="c-fw2">200🪙</span></button>
+                        <button class="upg" id="u-fw3" onclick="buy('fw3')"><span>👨‍🍳↑↑ Прокачка (1.5с)</span><span class="cost" id="c-fw3">400🪙</span></button>
                         <button class="upg" id="u-tw1" onclick="buy('tw1')"><span>🚚 Работник доставки (60с)</span><span class="cost" id="c-tw1">150🪙</span></button>
                         <button class="upg" id="u-tw2" onclick="buy('tw2')"><span>🚚↑ Прокачка (45с)</span><span class="cost" id="c-tw2">300🪙</span></button>
                         <button class="upg" id="u-tw3" onclick="buy('tw3')"><span>🚚↑↑ Прокачка (30с)</span><span class="cost" id="c-tw3">600🪙</span></button>
@@ -605,9 +605,9 @@
             sKeb: 0,
             batch: 1,
             hasFW: false,
-            fwCD: 25000,
+            fwCD: 5000,
             hasTW: false,
-            twCD: 60000,
+            twCD: 10000,
             hasSW: false,
             swCD: 20000,
             owned: [],
@@ -785,14 +785,14 @@
                 cost: 200,
                 req: 'fw1',
                 apply: () => {
-                    G.fwCD = 15000
+                    G.fwCD = 3150
                 }
             },
             fw3: {
                 cost: 400,
                 req: 'fw2',
                 apply: () => {
-                    G.fwCD = 10000
+                    G.fwCD = 1500
                 }
             },
             tw1: {
@@ -808,14 +808,14 @@
                 cost: 300,
                 req: 'tw1',
                 apply: () => {
-                    G.twCD = 45000
+                    G.twCD = 5000
                 }
             },
             tw3: {
                 cost: 600,
                 req: 'tw2',
                 apply: () => {
-                    G.twCD = 30000
+                    G.twCD = 2500
                 }
             },
             sw1: {
